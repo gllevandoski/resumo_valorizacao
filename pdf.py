@@ -5,7 +5,7 @@ class PDF:
         self.pdf_path = file
         self.properties = self.get_properties()
 
-    def get_properties(self) -> dict:
+    def get_properties(self):
         # top left coordinates (x0, y0) and bottom right coordinates (x1, y1)
         coordinates = {
                           "representative": (50, 80, 140, 95),
@@ -18,22 +18,17 @@ class PDF:
                           "serial_number": (200, 200, 500, 225)
                       }
 
-        properties = list()
+        self.representative = self.pdf[0].get_text("text", coordinates["representative"]).strip()
+        self.buyer = self.pdf[0].get_text("text", coordinates["buyer"]).strip()
+        self.date = self.pdf[0].get_text("text", coordinates["date"]).strip()
 
-        for page in self.pdf:
-            properties.append({
-                                   "analysis": self.analysis_to_list(page.get_text("text", coordinates["analysis"])),
-                                   "analysis_average": self.analysis_average_to_dict(page.get_text("text", coordinates["analysis_average"])),
-                                   "representative": page.get_text("text", coordinates["representative"]).strip(),
-                                   "buyer": page.get_text("text", coordinates["buyer"]).strip(),
-                                   "date": page.get_text("text", coordinates["date"]).strip(),
-                                   "cpf": page.get_text("text", coordinates["buyer_cpf"]).strip(),
-                                   "rg": page.get_text("text", coordinates["buyer_rg"]).strip(),
-                                   "serial_number": page.get_text("text", coordinates["serial_number"]).strip()
-                              })
-            
-        return properties
-            
+        self.buyer_cpf = self.pdf[0].get_text("text", coordinates["buyer_cpf"]).strip()
+        self.buyer_rg = self.pdf[0].get_text("text", coordinates["buyer_rg"]).strip()
+        self.serial_number = self.pdf[0].get_text("text", coordinates["serial_number"]).strip()
+
+        self.analysis = self.analysis_to_list(self.pdf[0].get_text("text", coordinates["analysis"]))
+        self.analysis_average = self.analysis_average_to_dict(self.pdf[0].get_text("text", coordinates["analysis_average"]))
+
     @staticmethod
     def analysis_average_to_dict(analysis: list) -> dict:
         analysis_dict = dict()
@@ -82,14 +77,17 @@ def load() -> dict:
     from os import walk
 
     pdfs = dict()
-    for folder in list(walk("valorizacoes"))[0][1]: # gets all the folders immediately bellow the folder
+    folders = list(walk("valorizacoes"))[0][1]
+    for folder in folders: # gets all the folders immediately bellow the folder
         files = glob(f"valorizacoes/{folder}/*.pdf")
-        if files:
+        try:
             pdfs[folder] = list()
 
             for file in files:
                 pdf = PDF(file)
                 pdfs[folder].append(pdf)
+        except Exception:
+            pass
 
     return pdfs
 
