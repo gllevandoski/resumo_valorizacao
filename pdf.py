@@ -22,7 +22,7 @@ class PdfPage:
                                "buyer_cpf": (150, 110, 250, 120),
                                "buyer_rg": (250, 110, 350, 120),
                                "analysis_average": (110, 150, 150, 200),
-                               "analysis": (50, 250, 435, 475),
+                               "analysis": (50, 250, 440, 475),
                                "serial_number": (200, 200, 500, 225),
                                "analysis_type": (30, 230, 40, 245)
                            }
