@@ -1,47 +1,71 @@
-class PDF:
+class Pdf:
     def __init__(self, file: str) -> None:
         import fitz
         self.pdf = fitz.open(file)
         self.pdf_path = file
-        self.properties = self.get_properties()
+        self.pages = list()
+        self.get_pages_properties()
 
-    def get_properties(self):
+    def get_pages_properties(self):
         # top left coordinates (x0, y0) and bottom right coordinates (x1, y1)
-        coordinates = {
-                          "representative": (50, 80, 140, 95),
-                          "buyer": (150, 80, 360, 95),
-                          "date": (350, 80, 415, 100),
-                          "buyer_cpf": (150, 110, 250, 120),
-                          "buyer_rg": (250, 110, 350, 120),
-                          "analysis_average": (110, 150, 150, 200),
-                          "analysis": (50, 250, 435, 475),
-                          "serial_number": (200, 200, 500, 225)
-                      }
 
-        self.representative = self.pdf[0].get_text("text", coordinates["representative"]).strip()
-        self.buyer = self.pdf[0].get_text("text", coordinates["buyer"]).strip()
-        self.date = self.pdf[0].get_text("text", coordinates["date"]).strip()
+        for page in self.pdf:
+            self.pages.append(PdfPage(page))
 
-        self.buyer_cpf = self.pdf[0].get_text("text", coordinates["buyer_cpf"]).strip()
-        self.buyer_rg = self.pdf[0].get_text("text", coordinates["buyer_rg"]).strip()
-        self.serial_number = self.pdf[0].get_text("text", coordinates["serial_number"]).strip()
 
-        self.analysis = self.analysis_to_list(self.pdf[0].get_text("text", coordinates["analysis"]))
-        self.analysis_average = self.analysis_average_to_dict(self.pdf[0].get_text("text", coordinates["analysis_average"]))
+class PdfPage:
+    def __init__(self, properties):
+        self.coordinates = {
+                               "representative": (50, 80, 150, 95),
+                               "buyer": (150, 80, 360, 95),
+                               "date": (350, 80, 415, 100),
+                               "buyer_cpf": (150, 110, 250, 120),
+                               "buyer_rg": (250, 110, 350, 120),
+                               "analysis_average": (110, 150, 150, 200),
+                               "analysis": (50, 250, 435, 475),
+                               "serial_number": (200, 200, 500, 225),
+                               "analysis_type": (30, 230, 40, 245)
+                           }
+        self.properties = properties
+        self.calculate()
+        if self.analytics == []:
+            self.analytics.append("error")
 
-    @staticmethod
-    def analysis_average_to_dict(analysis: list) -> dict:
-        analysis_dict = dict()
-        analysis = analysis.strip().split("\n")
-        analysis_dict["pd"] = analysis[0]
-        analysis_dict["pt"] = analysis[1]
-        analysis_dict["rh"] = analysis[2]
-        analysis_dict["kg"] = analysis[3]
+    def calculate(self):
+        self.representative = self.properties.get_text("text", self.coordinates["representative"]).strip()
+        self.buyer = self.properties.get_text("text", self.coordinates["buyer"]).strip()
+        self.date = self.properties.get_text("text", self.coordinates["date"]).strip()
 
-        return analysis_dict
+        self.buyer_cpf = self.properties.get_text("text", self.coordinates["buyer_cpf"]).strip()
+        self.buyer_rg = self.properties.get_text("text", self.coordinates["buyer_rg"]).strip()
+        self.serial_number = self.properties.get_text("text", self.coordinates["serial_number"]).strip()
 
-    @staticmethod
-    def analysis_to_list(analysis: list) -> list:
+        try:
+            self.analysis_type = int(self.properties.get_text("text", self.coordinates["analysis_type"]).strip())
+        except ValueError as VE:
+            print(f"page {self.properties.number}", VE)
+            self.analysis_type = "erro"
+
+        self.analysis_to_list()
+        self.analysis_average_to_dict()
+
+    def analysis_average_to_dict(self) -> dict:
+        try:
+            analysis = self.properties.get_text("text", self.coordinates["analysis_average"])
+            analysis = analysis.strip().split("\n")
+            analysis_dict = dict()
+
+            analysis_dict["pd"] = analysis[0]
+            analysis_dict["pt"] = analysis[1]
+            analysis_dict["rh"] = analysis[2]
+            analysis_dict["kg"] = analysis[3]
+
+            self.analysis_average = analysis_dict
+        except IndexError as E:
+            self.analysis_average = "erro"
+            print(self.properties, E)
+
+    def analysis_to_list(self) -> list:
         def cleanse_list(dirty_list: list) -> list:
             from string import digits
             clean_list = list()
@@ -67,9 +91,9 @@ class PDF:
 
             return formatted_list
 
-
-        analysis_list = cleanse_list(analysis.split("\n"))
-        return format_list(analysis_list, column_count=6)
+        dirty_list = self.properties.get_text("text", self.coordinates["analysis"])
+        analysis_list = cleanse_list(dirty_list.split("\n"))
+        self.analytics = format_list(analysis_list, column_count=6)
 
 
 def load() -> dict:
@@ -80,14 +104,13 @@ def load() -> dict:
     folders = list(walk("valorizacoes"))[0][1]
     for folder in folders: # gets all the folders immediately bellow the folder
         files = glob(f"valorizacoes/{folder}/*.pdf")
-        try:
-            pdfs[folder] = list()
 
-            for file in files:
-                pdf = PDF(file)
-                pdfs[folder].append(pdf)
-        except Exception:
-            pass
+        pdfs[folder] = list()
+
+        for file in files:
+            pdf = Pdf(file)
+            pdfs[folder].append(pdf)
+
 
     return pdfs
 
@@ -95,7 +118,7 @@ def load() -> dict:
 if __name__ == "__main__":
     pdfs = load()
 
-    for pdf in pdfs.values():
-        for analysis in pdf:
-            for prop in analysis.properties:
-                print(prop)
+    for pdf_list in pdfs.values():
+        for pdf in pdf_list:
+            for analysis in pdf.pages:
+                print(analysis)
