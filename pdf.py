@@ -7,29 +7,29 @@ class Pdf:
         self.get_pages_properties()
 
     def get_pages_properties(self):
-        # top left coordinates (x0, y0) and bottom right coordinates (x1, y1)
-
         for page in self.pdf:
             self.pages.append(PdfPage(page))
 
 
 class PdfPage:
     def __init__(self, properties):
+        # top left coordinates (x0, y0) and bottom right coordinates (x1, y1)
         self.coordinates = {
                                "representative": (50, 80, 150, 95),
                                "buyer": (150, 80, 360, 95),
                                "date": (350, 80, 415, 100),
                                "buyer_cpf": (150, 110, 250, 120),
                                "buyer_rg": (250, 110, 350, 120),
-                               "analysis_average": (110, 150, 150, 200),
+                               "analysis_average": (110, 130, 150, 220),
                                "analysis": (50, 250, 440, 475),
                                "serial_number": (200, 200, 500, 225),
-                               "analysis_type": (30, 230, 40, 245)
+                               "analysis_type": (30, 230, 40, 245),
+                               "total_value": (390, 500, 460, 520)
                            }
         self.properties = properties
         self.calculate()
         if self.analytics == []:
-            self.analytics.append("error")
+            self.analytics.append(f"error on {self.buyer}")
 
     def calculate(self):
         self.representative = self.properties.get_text("text", self.coordinates["representative"]).strip()
@@ -50,6 +50,7 @@ class PdfPage:
         self.analysis_average_to_dict()
 
     def analysis_average_to_dict(self) -> dict:
+        from string import ascii_letters
         try:
             analysis = self.properties.get_text("text", self.coordinates["analysis_average"])
             analysis = analysis.strip().split("\n")
@@ -59,6 +60,7 @@ class PdfPage:
             analysis_dict["pt"] = analysis[1]
             analysis_dict["rh"] = analysis[2]
             analysis_dict["kg"] = analysis[3]
+            analysis_dict["total_value"] = self.properties.get_text("text", self.coordinates["total_value"]).strip().strip(ascii_letters).strip("/\\")
 
             self.analysis_average = analysis_dict
         except IndexError as E:
