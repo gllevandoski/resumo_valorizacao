@@ -86,9 +86,11 @@ class Workbook():
                             finally:
                                 self.workbook.save(self.workbook_path)
 
-import pdf
 
-pdfs = pdf.load()
-wb = Workbook("assets/resumo.xlsx")
-wb.write(pdfs, resumed=False)
-print("done")
+if __name__ == "__main__":
+    import pdf
+
+    pdfs = pdf.load()
+    wb = Workbook("assets/resumo.xlsx")
+    wb.write(pdfs, resumed=False)
+    print("done")
