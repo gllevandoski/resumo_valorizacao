@@ -1,4 +1,4 @@
-from flask import Flask, send_from_directory, request, render_template, Response
+from flask import Flask, send_from_directory, request, render_template
 from uuid import uuid4
 
 
@@ -28,14 +28,10 @@ def receive_upload():
     download_link = f"{name}.xlsx"
     return {"download_link": download_link}
 
-@app.get("/download/<path>")
-def download_file(path):
-    path = f"/generated/{path}"
-    return render_template("download.html", path=path)
+@app.get("/download/<file_name>")
+def download_file(file_name):
+    return send_from_directory("generated", file_name)
 
-@app.get("/generated/<path>")
-def download_path(path):
-    return send_from_directory("generated", path)
 
 if __name__ == "__main__":
     app.run(debug = True, host="0.0.0.0", port=80)

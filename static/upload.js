@@ -2,10 +2,17 @@ function upload() {
     let pdf = document.getElementById("file").files[0];
     let formData = new FormData();
     formData.append("pdf", pdf);
+
     let promise = http_request(formData);
     promise.then((resolved) => {
         let download_link = JSON.parse(resolved)["download_link"];
-        window.location.href = "download/" + download_link;
+
+        let download_button = document.getElementById("download");
+        download_button.hidden = false;
+        
+        download_button.addEventListener("click", () => {
+            window.location.href = "download/" + download_link;
+        })
     });
 }
 

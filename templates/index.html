@@ -8,9 +8,15 @@
     <link rel="stylesheet" href="/static/css.css">
 </head>
 <body>
-    <div>
-        <input id="file" type="file" accept="pdf">
-        <button id="submit">Enviar</button>
+    <div class="description">
+        <h1>Resumo&nbsp;valorização</h1>
+        <p>&emsp;O funcionamento do programa é simples: envie um pdf com valorizações, o sistema processará o pdf e 
+            retornará um arquivo excel para melhor uma melhor visualização dos dados.</p>
+    </div>
+    <div class="form">
+        <input class="file_input" id="file" type="file" accept="pdf">
+        <button class="submit_button" id="submit">Enviar</button>
+        <button class="download_button" id="download" hidden>Baixar valorização</button>
     </div>
 </body>
 </html>
