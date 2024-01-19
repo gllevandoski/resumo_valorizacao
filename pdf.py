@@ -1,22 +1,19 @@
 class Pdf:
-    def __init__(self, file: str) -> None:
+    def __init__(self, file_path: str) -> None:
         import fitz
-        self.pdf = fitz.open(file)
-        self.pdf_path = file
+        pdf = fitz.open(file_path)
         self.pages = list()
-        self.get_pages_properties()
-
-    def get_pages_properties(self):
-        for page in self.pdf:
+        for page in pdf:
             self.pages.append(PdfPage(page))
 
-
 class PdfPage:
-    def __init__(self, properties):
+    def __init__(self, properties) -> None:
+        self.properties = properties
+        self.page_number = properties.number
         # top left coordinates (x0, y0) and bottom right coordinates (x1, y1)
         self.coordinates = {
-                               "representative": (50, 80, 150, 95),
-                               "buyer": (150, 80, 360, 95),
+                               "representative": (50, 80, 150, 90),
+                               "buyer": (150, 80, 360, 90),
                                "date": (350, 80, 415, 100),
                                "buyer_cpf": (150, 110, 250, 120),
                                "buyer_rg": (250, 110, 350, 120),
@@ -24,14 +21,11 @@ class PdfPage:
                                "analysis": (50, 250, 440, 475),
                                "serial_number": (200, 200, 500, 225),
                                "analysis_type": (30, 230, 40, 245),
-                               "total_value": (390, 500, 460, 520)
+                               "total_value": (390, 500, 460, 530)
                            }
-        self.properties = properties
-        self.calculate()
-        if self.analytics == []:
-            self.analytics.append(f"error on {self.buyer}")
+        self.ocr_extract_info()
 
-    def calculate(self):
+    def ocr_extract_info(self):
         self.representative = self.properties.get_text("text", self.coordinates["representative"]).strip()
         self.buyer = self.properties.get_text("text", self.coordinates["buyer"]).strip()
         self.date = self.properties.get_text("text", self.coordinates["date"]).strip()
@@ -46,10 +40,10 @@ class PdfPage:
             print(f"page {self.properties.number}", VE)
             self.analysis_type = "erro"
 
-        self.analysis_to_list()
-        self.analysis_average_to_dict()
+        self.calculate_analysis_lines(self.properties.get_text("text", self.coordinates["analysis"]))
+        self.calculate_analysis_average()
 
-    def analysis_average_to_dict(self) -> dict:
+    def calculate_analysis_average(self) -> dict:
         from string import ascii_letters
         try:
             analysis = self.properties.get_text("text", self.coordinates["analysis_average"])
@@ -60,6 +54,7 @@ class PdfPage:
             analysis_dict["pt"] = analysis[1]
             analysis_dict["rh"] = analysis[2]
             analysis_dict["kg"] = analysis[3]
+            analysis_dict["unitary_value"] = "0"
             analysis_dict["total_value"] = self.properties.get_text("text", self.coordinates["total_value"]).strip().strip(ascii_letters).strip("/\\")
 
             self.analysis_average = analysis_dict
@@ -67,7 +62,7 @@ class PdfPage:
             self.analysis_average = "erro"
             print(self.properties, E)
 
-    def analysis_to_list(self) -> list:
+    def calculate_analysis_lines(self, dirty_list) -> list:
         def cleanse_list(dirty_list: list) -> list:
             from string import digits
             clean_list = list()
@@ -93,26 +88,22 @@ class PdfPage:
 
             return formatted_list
 
-        dirty_list = self.properties.get_text("text", self.coordinates["analysis"])
         analysis_list = cleanse_list(dirty_list.split("\n"))
         self.analytics = format_list(analysis_list, column_count=6)
 
+        if self.analytics == []:
+            self.analytics.append(f"error on {self.buyer}")
 
-def load() -> dict:
+
+def load() -> list:
     from glob import glob
-    from os import walk
 
-    pdfs = dict()
-    folders = list(walk("valorizacoes"))[0][1]
-    for folder in folders: # gets all the folders immediately bellow the folder
-        files = glob(f"valorizacoes/{folder}/*.pdf")
+    pdfs = list()
+    files = glob(f"pdf/**/*.pdf", recursive=True)
 
-        pdfs[folder] = list()
-
-        for file in files:
-            pdf = Pdf(file)
-            pdfs[folder].append(pdf)
-
+    for file in files:
+        pdf = Pdf(file)
+        pdfs.append(pdf)
 
     return pdfs
 
@@ -120,7 +111,6 @@ def load() -> dict:
 if __name__ == "__main__":
     pdfs = load()
 
-    for pdf_list in pdfs.values():
-        for pdf in pdf_list:
-            for analysis in pdf.pages:
-                print(analysis)
+    for pdf in pdfs:
+        for page in pdf.pages:
+            print(page)

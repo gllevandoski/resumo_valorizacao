@@ -4,16 +4,21 @@ function upload() {
     formData.append("pdf", document.getElementById("file").files[0]);
 
     let promise = http_request(formData);
-    promise.then((resolved) => {
+    promise.then((response) => {
         let download_button = document.getElementById("download");
         let loading = document.getElementById("loading");
         download_button.hidden = false;
         loading.hidden = true;
         
         download_button.addEventListener("click", () => {
-            window.location.href = "download/" + JSON.parse(resolved)["download_link"];
+            window.location.href = "download/" + JSON.parse(response)["download_link"];
         })
-    });
+    }).catch((reason) => {
+        alert(reason);
+        setTimeout(() => {
+            location.reload();
+        }, 0);
+    })
 }
 
 window.addEventListener("DOMContentLoaded", () => {

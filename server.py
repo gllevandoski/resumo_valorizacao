@@ -12,17 +12,14 @@ def main():
 @app.post("/")
 def receive_upload():
     import pdf
-    import shutil
     from main import Workbook
 
     pdf_file = request.files["pdf"]
     name = uuid4()
     pdf_file.save(f"pdf/{name}.pdf")
 
-    web_pdf = {"internet": [pdf.Pdf(f"pdf/{name}.pdf")]}
-
-    shutil.copy("assets/resumo.xlsx", f"generated/{name}.xlsx")
-    wb = Workbook(f"generated/{name}.xlsx")
+    web_pdf = [pdf.Pdf(f"pdf/{name}.pdf")]
+    wb = Workbook(output_name=name)
     wb.write(web_pdf, resumed=False)
 
     download_link = f"{name}.xlsx"
