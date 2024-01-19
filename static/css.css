@@ -43,6 +43,7 @@ p {
     margin: 5% 20% 0 20%;
     border: 1px solid gainsboro;
     border-radius: 10px;
+    color: darkslategray;
 }
 
 .file_input {
