@@ -13,15 +13,16 @@ class PdfPage:
         # top left coordinates (x0, y0) and bottom right coordinates (x1, y1)
         self.coordinates = {
                                "representative": (50, 80, 150, 90),
-                               "buyer": (150, 80, 360, 90),
+                               "buyer": (155, 85, 360, 90),
                                "date": (350, 80, 415, 100),
                                "buyer_cpf": (150, 110, 250, 120),
                                "buyer_rg": (250, 110, 350, 120),
                                "analysis_average": (110, 130, 150, 220),
-                               "analysis": (50, 250, 440, 475),
+                               "analysis": (50, 230, 440, 475),
                                "serial_number": (200, 200, 500, 225),
-                               "analysis_type": (30, 230, 40, 245),
-                               "total_value": (390, 500, 460, 530)
+                               "analysis_type": (10, 170, 45, 235),
+                               "total_value": (370, 500, 460, 530),
+                               "quotations": (380, 135, 450, 190)
                            }
         self.ocr_extract_info()
 
@@ -33,6 +34,18 @@ class PdfPage:
         self.buyer_cpf = self.properties.get_text("text", self.coordinates["buyer_cpf"]).strip()
         self.buyer_rg = self.properties.get_text("text", self.coordinates["buyer_rg"]).strip()
         self.serial_number = self.properties.get_text("text", self.coordinates["serial_number"]).strip()
+        
+        dirty_quotations = self.properties.get_text("text", self.coordinates["quotations"]).strip().split("\n")
+        from string import digits
+        self.quotations = list()
+
+        for item in dirty_quotations:
+            for digit in digits:
+                if digit in item:
+                    self.quotations.append(item)
+                    break
+
+        
 
         try:
             self.analysis_type = int(self.properties.get_text("text", self.coordinates["analysis_type"]).strip())

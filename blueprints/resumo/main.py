@@ -38,6 +38,9 @@ class Workbook():
             spreadsheet.cell(row, 12).value = self.str_to_float(analysis["rh"])
             spreadsheet.cell(row, 13).value = self.str_to_float(analysis["unitary_value"])
             spreadsheet.cell(row, 14).value = self.str_to_float(analysis["total_value"])
+            spreadsheet.cell(row, 15).value = page.quotations[0]
+            spreadsheet.cell(row, 16).value = page.quotations[1]
+            spreadsheet.cell(row, 17).value = page.quotations[2]
 
         except TypeError as E:
             spreadsheet.cell(row, 1).value = "error"
@@ -70,6 +73,6 @@ if __name__ == "__main__":
     import pdf
 
     pdfs = pdf.load()
-    wb = Workbook("assets/resumo.xlsx")
+    wb = Workbook("resumo.xlsx")
     wb.write(pdfs, resumed=False)
     print("done")

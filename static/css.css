@@ -88,6 +88,14 @@ p {
     transition: 0.2s;
 }
 
+.back_button {
+    font-family: inherit;
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    color: darkslategray;
+}
+
 @media all and (max-width: 780px) {
     body {
         column-count: 1;

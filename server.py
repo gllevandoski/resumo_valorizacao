@@ -1,33 +1,16 @@
-from flask import Flask, send_from_directory, request, render_template
-from uuid import uuid4
+from flask import Flask, render_template
+from blueprints.resumo.server import resumo_blueprint
+from blueprints.traducao.server import traducao_blueprint
 
 
 app = Flask(__name__)
+app.register_blueprint(resumo_blueprint)
+app.register_blueprint(traducao_blueprint)
 
 
 @app.get("/")
 def main():
     return render_template("index.html")
-
-@app.post("/")
-def receive_upload():
-    import pdf
-    from main import Workbook
-
-    pdf_file = request.files["pdf"]
-    name = uuid4()
-    pdf_file.save(f"pdf/{name}.pdf")
-
-    web_pdf = [pdf.Pdf(f"pdf/{name}.pdf")]
-    wb = Workbook(output_name=name)
-    wb.write(web_pdf, resumed=False)
-
-    download_link = f"{name}.xlsx"
-    return {"download_link": download_link}
-
-@app.get("/download/<file_name>")
-def download_file(file_name):
-    return send_from_directory("generated", file_name)
 
 
 if __name__ == "__main__":

@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Enviar pdf</title>
+    <script src="/static/upload.js"></script>
+    <link rel="stylesheet" href="/static/css.css">
+</head>
+<body>
+    <a class="back_button" href="javascript:history.go(-1)">&#9664; Voltar</a>
+    <div class="description">
+        <h1>Resumo&nbsp;valorização</h1>
+        <p>&emsp;O funcionamento do programa é simples: envie um pdf com valorizações, o sistema processará o pdf e 
+            retornará um arquivo excel para melhor uma melhor visualização dos dados.</p>
+    </div>
+    <div class="form">
+        <input class="file_input" id="file" type="file" accept="pdf">
+        <button class="submit_button" id="submit">Enviar</button>
+        <p id="loading" hidden>carregando...</p>
+        <button class="download_button" id="download" hidden>Baixar valorização</button>
+    </div>
+</body>
+</html>

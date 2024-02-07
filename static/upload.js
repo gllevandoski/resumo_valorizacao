@@ -11,7 +11,7 @@ function upload() {
         loading.hidden = true;
         
         download_button.addEventListener("click", () => {
-            window.location.href = "download/" + JSON.parse(response)["download_link"];
+            window.location.href = "/resumo/download/" + JSON.parse(response)["download_link"];
         })
     }).catch((reason) => {
         alert(reason);
@@ -36,7 +36,7 @@ window.addEventListener("DOMContentLoaded", () => {
 function http_request(data) {
     let promise = new Promise((resolve, reject) => {
         let xhr = new XMLHttpRequest();
-        xhr.open("POST", "/");
+        xhr.open("POST", "/resumo");
 
         xhr.onload = () => {
             if (xhr.status >= 400) {
