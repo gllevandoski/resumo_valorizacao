@@ -3,14 +3,14 @@ from win32com import client
 
 
 def load_new_wb(filename):
-    destination_folder = "sheets"
+    destination_folder = "output"
     workbook = load_workbook("assets/base.xlsx")
     workbook.save(f"{destination_folder}/{filename}.xlsx")
     return load_workbook(f"{destination_folder}/{filename}.xlsx")
 
 
 def save_wb(workbook, filename):
-    destination_folder = "sheets"
+    destination_folder = "output"
     workbook.save(f"{destination_folder}/{filename}.xlsx")
 
 

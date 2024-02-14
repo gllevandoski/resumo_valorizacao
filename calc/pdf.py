@@ -3,26 +3,30 @@ class Pdf:
         import fitz
         pdf = fitz.open(file_path)
         self.pages = list()
+
         for page in pdf:
             self.pages.append(PdfPage(page))
 
 class PdfPage:
     def __init__(self, properties) -> None:
         self.properties = properties
-        self.page_number = properties.number
+        self.page_number = properties.number + 1
+
         # top left coordinates (x0, y0) and bottom right coordinates (x1, y1)
+        # this is measured in points (1 inch = 72 points), you need to get this manually
         self.coordinates = {
-                               "representative": (50, 80, 150, 90),
-                               "buyer": (155, 85, 360, 90),
-                               "date": (350, 80, 415, 100),
-                               "buyer_cpf": (150, 110, 250, 120),
-                               "buyer_rg": (250, 110, 350, 120),
-                               "analysis_average": (110, 130, 150, 220),
-                               "analysis": (50, 230, 440, 475),
-                               "serial_number": (200, 200, 500, 225),
-                               "analysis_type": (10, 170, 45, 235),
-                               "total_value": (370, 500, 460, 530),
-                               "quotations": (380, 135, 450, 190)
+                               "representative": (50, 75, 162, 88),
+                               "buyer": (162, 75, 338, 88),
+                               "date": (360, 75, 450, 88),
+                               "buyer_cpf": (162, 105, 270, 118),
+                               "buyer_rg": (270, 105, 400, 118),
+                               "analysis_average": (110, 130, 160, 195),
+                               "analysis": (50, 240, 465, 445),
+                               "serial_number": (288, 190, 450, 220),
+                               "analysis_type": (36, 225, 50, 245),
+                               "total_value": (360, 495, 450, 515),
+                               "quotations": (380, 130, 445, 195),
+                               "avg_kg_price": (110, 495, 170, 515)
                            }
         self.ocr_extract_info()
 
@@ -35,26 +39,26 @@ class PdfPage:
         self.buyer_rg = self.properties.get_text("text", self.coordinates["buyer_rg"]).strip()
         self.serial_number = self.properties.get_text("text", self.coordinates["serial_number"]).strip()
         
-        dirty_quotations = self.properties.get_text("text", self.coordinates["quotations"]).strip().split("\n")
+        self.cleanse_quotations(self.properties.get_text("text", self.coordinates["quotations"]).strip().split("\n"))
+        self.calculate_analysis_lines(self.properties.get_text("text", self.coordinates["analysis"]))
+        self.calculate_analysis_average()
+
+        try:
+            self.analysis_type = int(self.properties.get_text("text", self.coordinates["analysis_type"]).strip())
+
+        except ValueError as VE:
+            print(f"page {self.properties.number}", VE)
+            self.analysis_type = "erro"
+
+    def cleanse_quotations(self, dirty_quotations):
         from string import digits
         self.quotations = list()
 
         for item in dirty_quotations:
             for digit in digits:
                 if digit in item:
-                    self.quotations.append(item)
+                    self.quotations.append(float(item.replace(".", "").replace(",", ".")))
                     break
-
-        
-
-        try:
-            self.analysis_type = int(self.properties.get_text("text", self.coordinates["analysis_type"]).strip())
-        except ValueError as VE:
-            print(f"page {self.properties.number}", VE)
-            self.analysis_type = "erro"
-
-        self.calculate_analysis_lines(self.properties.get_text("text", self.coordinates["analysis"]))
-        self.calculate_analysis_average()
 
     def calculate_analysis_average(self) -> dict:
         from string import ascii_letters
@@ -112,7 +116,8 @@ def load() -> list:
     from glob import glob
 
     pdfs = list()
-    files = glob(f"pdf/**/*.pdf", recursive=True)
+    files = glob("calc/input/**/*.pdf", recursive=True)
+    print(files)
 
     for file in files:
         pdf = Pdf(file)
@@ -126,4 +131,4 @@ if __name__ == "__main__":
 
     for pdf in pdfs:
         for page in pdf.pages:
-            print(page)
+            print(page.quotations)
