@@ -1,11 +1,23 @@
 <!DOCTYPE html>
-<html lang="pt-BR">
+<html lang="pt-br">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Em construção</title>
+    <title>Traduzir valorização</title>
+    <script src="/static/traducao.js"></script>
+    <link rel="stylesheet" href="/static/css.css">
 </head>
 <body>
-    <p1>Em construção</p1>
+    <a class="back_button" href="javascript:history.go(-1)">&#9664; Voltar</a>
+    <div class="description">
+        <h1>Traduz&nbsp;valorização</h1>
+        <p>&emsp;todo...</p>
+    </div>
+    <form method="POST" enctype="multipart/form-data">
+        <input class="file_input" id="file" type="file" accept="pdf">
+        <button class="submit_button" id="submit" type="submit" onclick="(event) => event.preventDefault()">Enviar</button>
+        <p id="loading" hidden>carregando...</p>
+        <button class="download_button" id="download" hidden>Baixar valorização</button>
+    </form>
 </body>
 </html>

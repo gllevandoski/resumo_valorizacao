@@ -3,14 +3,10 @@ from openpyxl import load_workbook
 
 class Workbook():
     def __init__(self) -> None:
-        from secrets import token_hex
-        filename = token_hex(6)
-        workbook_path = f"generated/{filename}.xlsx"
-
-        import shutil
-        shutil.copy2("assets/resumo.xlsx", workbook_path)
-        
+        from io import BytesIO
+        workbook_path = "calc/static/resumo.xlsx"
         self.workbook = load_workbook(workbook_path)
+        self.virtual_wb = BytesIO()
 
     def write_to_excel(self, spreadsheet, row, page, analysis) -> None:
         def str_to_float(string) -> float:
@@ -42,9 +38,9 @@ class Workbook():
             print(row, E)
 
         finally:
-            self.workbook.save(self.workbook_path)
+            self.workbook.save(self.virtual_wb)
 
-    def write(self, folders_list: list, resumed: bool = False) -> None:
+    def write(self, pdf, resumed: bool = False) -> None:
         def return_last_empty_row(spreadsheet) -> int:
             for row in spreadsheet.iter_rows(min_row=3, min_col=2, max_col=2):
                 if row[0].value is None:
@@ -52,23 +48,15 @@ class Workbook():
 
         spreadsheet = self.workbook.active
 
-        for pdf in folders_list:
-            for page in pdf.pages:
-                last_empty_row = return_last_empty_row(spreadsheet)
+        for page in pdf.pages:
+            last_empty_row = return_last_empty_row(spreadsheet)
 
-                if resumed:
-                    self.write_to_excel(spreadsheet, last_empty_row, page, page.analysis_average)
+            if resumed:
+                self.write_to_excel(spreadsheet, last_empty_row, page, page.analysis_average)
 
-                if not resumed:
-                    for i, analysis in enumerate(page.analytics):
-                        row = last_empty_row + i
-                        self.write_to_excel(spreadsheet, row, page, analysis)
+            if not resumed:
+                for i, analysis in enumerate(page.analytics):
+                    row = last_empty_row + i
+                    self.write_to_excel(spreadsheet, row, page, analysis)
 
-
-if __name__ == "__main__":
-    import pdf
-
-    pdfs = pdf.load()
-    wb = Workbook()
-    wb.write(pdfs, resumed=False)
-    print("done")
+        return self.virtual_wb

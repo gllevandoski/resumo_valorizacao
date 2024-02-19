@@ -1,13 +1,13 @@
-from flask import Blueprint, request, send_from_directory
+from flask import Blueprint, request, send_from_directory, render_template
 from uuid import uuid4
 
 
-traducao_blueprint = Blueprint("traducao", __name__, url_prefix="/traducao", template_folder="templates")
+traducao_blueprint = Blueprint("traducao_blueprint", __name__, url_prefix="/traducao", template_folder="templates")
 
 
 @traducao_blueprint.get("/")
 def main():
-    return "not implemented"
+    return render_template("traducao/index.html")
 
 @traducao_blueprint.post("/")
 def receive_upload():

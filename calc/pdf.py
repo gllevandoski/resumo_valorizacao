@@ -1,7 +1,9 @@
+from io import BytesIO
+
 class Pdf:
-    def __init__(self, file_path: str) -> None:
+    def __init__(self, file: BytesIO) -> None:
         import fitz
-        pdf = fitz.open(file_path)
+        pdf = fitz.open(stream=file)
         self.pages = list()
 
         for page in pdf:
@@ -110,25 +112,3 @@ class PdfPage:
 
         if self.analytics == []:
             self.analytics.append(f"error on {self.buyer}")
-
-
-def load() -> list:
-    from glob import glob
-
-    pdfs = list()
-    files = glob("calc/input/**/*.pdf", recursive=True)
-    print(files)
-
-    for file in files:
-        pdf = Pdf(file)
-        pdfs.append(pdf)
-
-    return pdfs
-
-
-if __name__ == "__main__":
-    pdfs = load()
-
-    for pdf in pdfs:
-        for page in pdf.pages:
-            print(page.quotations)
