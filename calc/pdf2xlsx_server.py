@@ -25,10 +25,7 @@ def receive_upload():
     pdf_file = Pdf(pdf_file)
     wb = Workbook()
     download = wb.write(pdf_file, resumed=False)
-    download = wrap_file(request.environ, file=download)
+    download.seek(0)
 
-    print(download)
-    print("sent")
-
-    return Response(download, direct_passthrough=True, mimetype="pdf")
-    # return send_file(download, mimetype="pdf", as_attachment=True, download_name=filename)
+    headers = {"Content-Disposition": "attachment; filename=%s" % filename}
+    return Response(download, content_type="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", headers=headers)
