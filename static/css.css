@@ -5,8 +5,10 @@
 }
 
 body {
+    display: flex;
     margin: 10%;
     align-items: center;
+    justify-content: space-around;
     column-count: 2;
     background-color: floralwhite;
 }
@@ -33,6 +35,7 @@ p {
     color: darkslategray;
     border: 1px solid gainsboro;
     border-radius: 10px;
+    max-width: 40%;
 }
 
 .form {
@@ -40,15 +43,22 @@ p {
     flex-direction: column;
     text-align: left;
     align-items: center;
-    margin: 5% 20% 0 20%;
     border: 1px solid gainsboro;
     border-radius: 10px;
     color: darkslategray;
 }
 
+.file_label {
+    align-self: flex-start;
+    color: darkslategray;
+    padding-bottom: 0;
+    padding-left: 30px;
+}
+
 .file_input {
     width: fit-content;
     margin: 1rem;
+    margin-top: .3rem;
     padding: 6px 12px;
     background-color: black;
     border: 1px solid gainsboro;   

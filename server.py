@@ -1,14 +1,13 @@
 from flask import Flask, render_template
-from calc.pdf2xlsx_server import resumo_blueprint
-from calc.translate_server import traducao_blueprint
+from resumo.pdf2xlsx_server import resumo_blueprint
+from translate.translate_server import traducao_blueprint
 from flask_cors import CORS
 
 
 app = Flask(__name__)
 app.register_blueprint(resumo_blueprint)
-# app.register_blueprint(traducao_blueprint)
-CORS(app, resources={r"/*": {"origins" : "*", "Access-Control-Allow-Headers": "*"}
-})
+app.register_blueprint(traducao_blueprint)
+CORS(app, resources={r"/*": {"origins" : "*", "Access-Control-Allow-Headers": "*"}})
 
 
 @app.get("/")

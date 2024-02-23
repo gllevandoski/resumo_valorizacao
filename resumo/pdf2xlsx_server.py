@@ -13,11 +13,11 @@ def main():
 @resumo_blueprint.post("/")
 def receive_upload():
     from werkzeug.utils import secure_filename
-    from calc.pdf import Pdf
-    from calc.pdf2xlsx import Workbook
+    from resumo.pdf import Pdf
+    from resumo.pdf2xlsx import Workbook
     from io import BytesIO
 
-    pdf_file_fs = request.files["pdf"]
+    pdf_file_fs = request.files["pdf_0"]
     filename = secure_filename(pdf_file_fs.filename)
     pdf_file = BytesIO()
     pdf_file_fs.save(pdf_file)
@@ -27,5 +27,5 @@ def receive_upload():
     download = wb.write(pdf_file, resumed=False)
     download.seek(0)
 
-    headers = {"Content-Disposition": "attachment; filename=%s" % filename}
+    headers = {"Content-Disposition": f"attachment; filename*={filename}"}
     return Response(download, content_type="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", headers=headers)

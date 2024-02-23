@@ -4,7 +4,7 @@ from openpyxl import load_workbook
 class Workbook():
     def __init__(self) -> None:
         from io import BytesIO
-        workbook_path = "calc/static/resumo.xlsx"
+        workbook_path = "resumo/static/resumo.xlsx"
         self.workbook = load_workbook(workbook_path)
         self.virtual_wb = BytesIO()
 

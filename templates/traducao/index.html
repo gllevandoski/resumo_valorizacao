@@ -4,20 +4,25 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Traduzir valorização</title>
-    <script src="/static/traducao.js"></script>
+    <script src="/static/upload.js"></script>
     <link rel="stylesheet" href="/static/css.css">
 </head>
 <body>
     <a class="back_button" href="javascript:history.go(-1)">&#9664; Voltar</a>
     <div class="description">
         <h1>Traduz&nbsp;valorização</h1>
-        <p>&emsp;todo...</p>
+        <p>&emsp;Para utilizar o software, envie o excel do resumo dos pdfs no primeiro
+            campo e envie a planilha de valorização que será usada para traduzir os pdfs
+            no segundo campo.</p>
     </div>
-    <form method="POST" enctype="multipart/form-data">
-        <input class="file_input" id="file" type="file" accept="pdf">
+    <form class="form" method="POST" enctype="multipart/form-data">
+        <label class="file_label" for="file">Resumo: </label>
+        <input class="file_input" id="file" type="file" accept="xlsx">
+        <label class="file_label" for="file_2">Planilha base: </label>
+        <input class="file_input" id="file_2" type="file" accept="xlsx">
         <button class="submit_button" id="submit" type="submit" onclick="(event) => event.preventDefault()">Enviar</button>
         <p id="loading" hidden>carregando...</p>
-        <button class="download_button" id="download" hidden>Baixar valorização</button>
+        <button class="download_button" id="download" hidden>Baixar pdfs traduzidos</button>
     </form>
 </body>
 </html>

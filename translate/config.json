@@ -1,0 +1,18 @@
+{ 
+    "workbook": {
+        "page_number": 0,
+        "representative": 2,
+        "buyer": 3,
+        "buyer_cpf": 4,
+        "serial_number": 5,
+        "analysis_type": 6,
+        "analytics_kg": 7,
+        "analytics_pd": 8,
+        "analytics_pt": 9,
+        "analytics_rh": 10,
+        "analytics_total_value": 11,
+        "pd_price": 12,
+        "pt_price": 13,
+        "rh_price": 14
+    }
+}

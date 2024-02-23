@@ -4,21 +4,22 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Enviar pdf</title>
-    <script src="/static/resumo.js"></script>
+    <script src="/static/upload.js"></script>
     <link rel="stylesheet" href="/static/css.css">
 </head>
 <body>
     <a class="back_button" href="javascript:history.go(-1)">&#9664; Voltar</a>
     <div class="description">
         <h1>Resumo&nbsp;valorização</h1>
-        <p>&emsp;O funcionamento do programa é simples: envie um pdf com valorizações, o sistema processará o pdf e 
-            retornará um arquivo excel para melhor uma melhor visualização dos dados.</p>
+        <p>&emsp;O programa funciona da seguinte forma: envie um pdf com valorizações, o sistema processará 
+            o pdf e retornará um arquivo excel com os dados separados em colunas.</p>
     </div>
-    <div class="form">
+    <form class="form" method="POST" enctype="multipart/form-data">
+        <label class="file_label" for="file">Valorizações: </label>
         <input class="file_input" id="file" type="file" accept="pdf">
-        <button class="submit_button" id="submit">Enviar</button>
+        <button class="submit_button" id="submit" type="submit" onclick="(event) => event.preventDefault()">Enviar</button>
         <p id="loading" hidden>carregando...</p>
         <button class="download_button" id="download" hidden>Baixar resumo</button>
-    </div>
+    </form>
 </body>
 </html>
