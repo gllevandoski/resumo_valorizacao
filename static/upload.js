@@ -28,26 +28,26 @@ function upload(formData) {
 }
 
 function handle_upload() {
-    let file_inputs = document.getElementsByTagName("input");
+    let file_inputs = document.querySelectorAll("input");
     let formData = new FormData();
-    for(file in file_inputs) {
-        formData.append("pdf_" + file, file_inputs[file].files[0]);
-    upload(formData);
+    for(file of file_inputs) {
+        formData.append(String(file.id), file.files[0]);
     }
-
+    upload(formData);
 }
 
 window.addEventListener("DOMContentLoaded", () => {
     let submit_button = document.getElementById("submit");
-    let file_input = document.getElementById("file");
+    let file_inputs = document.querySelectorAll("input");
     let download_button = document.getElementById("download");
 
     submit_button.addEventListener("click", (event) => {
         event.preventDefault();
         handle_upload();
     });
-
-    file_input.addEventListener("change", () => {
-        download_button.hidden = true;
-    });
+    for(file_input of file_inputs) {
+        file_input.addEventListener("change", () => {
+            download_button.hidden = true;
+        });
+    }
 });

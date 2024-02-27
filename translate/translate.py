@@ -1,15 +1,12 @@
-from win32com import client
+from openpyxl import load_workbook
 
 
 class Translate:
     def __init__(self, batch_workbook, template_workbook) -> None:
-        from openpyxl import load_workbook
         self.batch_workbook = load_workbook(batch_workbook)
         self.batch_spreadsheet = self.batch_workbook.active
 
-        self.template_workbook = load_workbook(template_workbook)
-        self.template_main_spreadsheet = self.template_workbook["Média de Valorização"]
-        self.template_inside_spreadsheet = self.template_workbook["Interna"]
+        self.template_workbook = template_workbook
 
         self.analysis_list = list()
         self.workbooks = list()
@@ -29,7 +26,7 @@ class Translate:
 
     def read(self):
         cfg = self.load_config("workbook")
-
+        
         for row in self.batch_spreadsheet.iter_rows(min_row=3, min_col=2, values_only=True):
             if row[0] is None:
                 break
@@ -77,37 +74,49 @@ class Translate:
         formated_info = format_info(self.analysis_list)
 
         for info in formated_info.values():
-            self.batch_spreadsheet["c4"] = info["representative"]
-            self.batch_spreadsheet["cf14"] = info["analysis_type"]
-            self.batch_spreadsheet["e4"] = info["buyer"]
-            self.batch_spreadsheet["e6"] = info["buyer_cpf"]
-            self.batch_spreadsheet["x9"] = info["pd_price"]
-            self.batch_spreadsheet["x10"] = info["pt_price"]
-            self.batch_spreadsheet["x11"] = info["rh_price"]
+            template = load_workbook(self.template_workbook)
+            main_spreadsheet = template["Média de Valorização"]
+
+            main_spreadsheet["c4"] = info["representative"]
+            main_spreadsheet["cf14"] = info["analysis_type"]
+            main_spreadsheet["e4"] = info["buyer"]
+            main_spreadsheet["e6"] = info["buyer_cpf"]
+            main_spreadsheet["x9"] = info["pd_price"]
+            main_spreadsheet["x10"] = info["pt_price"]
+            main_spreadsheet["x11"] = info["rh_price"]
 
             for analysis in info["analytics"]:
-                row = return_first_empty_row(self.batch_spreadsheet)
-                self.batch_spreadsheet.cell(row, 3).value = analysis["kg"]
-                self.batch_spreadsheet.cell(row, 4).value = analysis["pd"]
-                self.batch_spreadsheet.cell(row, 5).value = analysis["pt"]
-                self.batch_spreadsheet.cell(row, 6).value = analysis["rh"]
+                row = return_first_empty_row(main_spreadsheet)
+                main_spreadsheet.cell(row, 3).value = analysis["kg"]
+                main_spreadsheet.cell(row, 4).value = analysis["pd"]
+                main_spreadsheet.cell(row, 5).value = analysis["pt"]
+                main_spreadsheet.cell(row, 6).value = analysis["rh"]
 
             # saving the spreadsheet
-            self.workbooks.append(info["page_number"])
+            self.workbooks.append(template)
 
     def generate_pdfs(self):
+        from win32com import client
         from io import BytesIO
+        import pythoncom
+        pythoncom.CoInitialize()
 
-        for sheet in self.workbooks:
-            output = BytesIO()
+        for i, workbook in enumerate(self.workbooks):
+            workbook.save(".tmp/tmpfile.xlsx")
+            inp = open(".tmp/tmpfile.xlsx")
 
-            excel = client.Dispatch("Excel.Application")
-            wb = excel.Workbooks.Open(sheet)
-            ws = wb.Worksheets[1]
+            try:
+                excel = client.Dispatch("Excel.Application")
 
-            ws.PageSetup.PrintArea = "print_area"
-            ws.ExportAsFixedFormat(0, output)
-            wb.Close(SaveChanges=1)
+                wb = excel.Workbooks.OpenXML(r"C:\Users\Home\Desktop\resumo_valorizacao\.tmp\tmpfile.xlsx")
+                ws = wb.Worksheets[1]
 
-            self.pdfs.append(output)
-
+                ws.PageSetup.PrintArea = "B1:CB53"
+                ws.ExportAsFixedFormat(0, fr"C:\Users\Home\Desktop\resumo_valorizacao\.tmp\{i}.pdf")
+                wb.Close(True)
+            finally:
+                ws = None
+                wb = None
+                excel.Application.Quit()
+                excel = None
+                inp.close()

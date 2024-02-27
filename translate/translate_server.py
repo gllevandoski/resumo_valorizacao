@@ -19,13 +19,13 @@ def receive_upload():
     filename = secure_filename(template_fs.filename)
     
     resumo_file = BytesIO()
-    resumo_fs.save(resumo_file)
     template_file = BytesIO()
+    resumo_fs.save(resumo_file)
     template_fs.save(template_file)
 
     ts = Translate(resumo_file, template_file)
     pdfs = ts.pdfs
 
     headers = {"Content-Disposition": "attachment; filename=%s" % filename}
-    return Response(pdfs, content_type="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", headers=headers)
+    return Response(pdfs[1], content_type="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", headers=headers)
 
