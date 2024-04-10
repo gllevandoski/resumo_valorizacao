@@ -1,0 +1,50 @@
+{
+    "br": {
+        "pd": {
+            "value": 1040.00,
+            "interest": 0.07,
+            "period_in_days": 180,
+            "deduction_in_usd": 7.00,
+            "received_percentage": 0.979
+        },
+        "pt": {
+            "value": 890.00,
+            "interest": 0.085,
+            "period_in_days": 180,
+            "deduction_in_usd": 7.00,
+            "received_percentage": 0.979
+        },
+        "rh": {
+            "value": 4200.00,
+            "interest": 0.08,
+            "period_in_days": 210,
+            "deduction_in_usd": 70.00,
+            "received_percentage": 0.849
+        },
+        "dolar": 4.9
+    },
+    "py": {
+        "pd": {
+            "value": 1040.00,
+            "interest": 0.07,
+            "period_in_days": 180,
+            "deduction_in_usd": 7.00,
+            "received_percentage": 0.979
+        },
+        "pt": {
+            "value": 890.00,
+            "interest": 0.085,
+            "period_in_days": 180,
+            "deduction_in_usd": 7.00,
+            "received_percentage": 0.979
+        },
+        "rh": {
+            "value": 4200.00,
+            "interest": 0.08,
+            "period_in_days": 210,
+            "deduction_in_usd": 70.00,
+            "received_percentage": 0.849
+        },
+        "dolar": 7.2
+    }
+}

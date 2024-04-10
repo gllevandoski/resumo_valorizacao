@@ -1,6 +1,6 @@
 from flask import Flask, render_template
-from resumo.pdf2xlsx_server import resumo_blueprint
-from translate.translate_server import traducao_blueprint
+from modules.resumo.server import resumo_blueprint
+from modules.traducao.server import traducao_blueprint
 from flask_cors import CORS
 
 
@@ -16,4 +16,4 @@ def main():
 
 
 if __name__ == "__main__":
-    app.run(debug = True, port=80)
+    app.run(debug=True, host="0.0.0.0", port=80)

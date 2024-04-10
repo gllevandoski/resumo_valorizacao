@@ -1,25 +1,54 @@
 <!DOCTYPE html>
-<html lang="pt-br">
+<html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Enviar pdf</title>
     <script src="/static/upload.js"></script>
     <link rel="stylesheet" href="/static/css.css">
 </head>
 <body>
-    <a class="back_button" href="javascript:history.go(-1)">&#9664; Voltar</a>
+    <a class="back_button">&#9664; Voltar</a>
     <div class="description">
-        <h1>Resumo&nbsp;valorização</h1>
+        <h1>Resumo valorização</h1>
         <p>&emsp;O programa funciona da seguinte forma: envie um pdf com valorizações, o sistema processará 
             o pdf e retornará um arquivo excel com os dados separados em colunas.</p>
     </div>
-    <form class="form" method="POST" enctype="multipart/form-data">
-        <label class="file_label" for="pdf_0">Valorizações: </label>
-        <input class="file_input" id="pdf_0" type="file" accept="pdf">
-        <button class="submit_button" id="submit" type="submit" onclick="(event) => event.preventDefault()">Enviar</button>
+    <form>
+            <label class="file_label" for="pdf_0">Valorizações: </label>
+            <input class="file_input" id="pdf_0" type="file" accept="pdf" autocomplete="off">
+        <div class="options">
+            <fieldset class="write_types">
+                <span>
+                    <label for="type_0">Linha por linha</label>
+                    <input value="0" id="type_0" name="write_type" type="radio" autocomplete="off">
+                </span>
+                <span>
+                    <label for="type_1">Pdf por pdf</label>
+                    <input value="1" id="type_1" name="write_type" type="radio" autocomplete="off">
+                </span>
+                <span>
+                    <label for="type_2">Resumo de entrega</label>
+                    <input value="2" id="type_2" name="write_type" type="radio" autocomplete="off">
+                </span>
+            </fieldset>
+            <fieldset class="alignment_type">
+                <span>
+                    <label for="type_1">Am. Latina</label>
+                    <input value="py_coordinates" id="type_1" name="alignment_type" type="radio" autocomplete="off">
+                </span>
+                <span>
+                    <label for="type_2">Brasil</label>
+                    <input value="br_coordinates" id="type_2" name="alignment_type" type="radio" autocomplete="off">
+                </span>
+            </fieldset>
+        </div>
+        <button class="submit_button" id="submit">Enviar</button>
         <p id="loading" hidden>carregando...</p>
-        <button class="download_button" id="download" hidden>Baixar resumo</button>
+        <a class="download_button" id="download" hidden>Baixar resumo</a>
     </form>
 </body>
+<script defer>
+    document.querySelector(".back_button").addEventListener("click", () => {history.go(-1);});
+    document.querySelector(".submit_button").addEventListener("click", (event) => event.preventDefault());
+</script>
 </html>

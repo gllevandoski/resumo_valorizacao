@@ -1,12 +1,13 @@
 from openpyxl import load_workbook
+from io import BytesIO
 
 
 class Translate:
-    def __init__(self, batch_workbook, template_workbook) -> None:
-        self.batch_workbook = load_workbook(batch_workbook)
-        self.batch_spreadsheet = self.batch_workbook.active
+    def __init__(self, brief_workbook) -> None:
+        self.brief_workbook = load_workbook(brief_workbook)
+        self.batch_spreadsheet = self.brief_workbook.active
 
-        self.template_workbook = template_workbook
+        self.template_workbook = "modules/traducao/base.xlsx"
 
         self.analysis_list = list()
         self.workbooks = list()
@@ -14,19 +15,13 @@ class Translate:
 
         self.read()
         self.generate_sheets()
-        self.generate_pdfs()
-
-    @staticmethod
-    def load_config(context):
-        with open("translate/config.json") as cfg_file:
-            cfg = cfg_file.read()
-
-        from json import loads
-        return loads(cfg)[context]
+        pdfs = self.generate_pdfs()
+        self.merge_pdfs(pdfs)
 
     def read(self):
-        cfg = self.load_config("workbook")
-        
+        cfg = load_config("traducao/config")
+
+        # iter through the rows filled with content
         for row in self.batch_spreadsheet.iter_rows(min_row=3, min_col=2, values_only=True):
             if row[0] is None:
                 break
@@ -76,6 +71,13 @@ class Translate:
         for info in formated_info.values():
             template = load_workbook(self.template_workbook)
             main_spreadsheet = template["Média de Valorização"]
+            calc_spreadsheet = template["Interna"]
+
+            calibrations = load_config("calibration")[info["serial_number"]]
+
+            calc_spreadsheet["d15"] = calibrations["pd"]
+            calc_spreadsheet["d16"] = calibrations["pt"]
+            calc_spreadsheet["d17"] = calibrations["rh"]
 
             main_spreadsheet["c4"] = info["representative"]
             main_spreadsheet["cf14"] = info["analysis_type"]
@@ -84,6 +86,7 @@ class Translate:
             main_spreadsheet["x9"] = info["pd_price"]
             main_spreadsheet["x10"] = info["pt_price"]
             main_spreadsheet["x11"] = info["rh_price"]
+            main_spreadsheet["w14"] = info["serial_number"]
 
             for analysis in info["analytics"]:
                 row = return_first_empty_row(main_spreadsheet)
@@ -97,26 +100,55 @@ class Translate:
 
     def generate_pdfs(self):
         from win32com import client
-        from io import BytesIO
         import pythoncom
+        from uuid import uuid4 as uid
         pythoncom.CoInitialize()
 
-        for i, workbook in enumerate(self.workbooks):
-            workbook.save(".tmp/tmpfile.xlsx")
-            inp = open(".tmp/tmpfile.xlsx")
+        pdfs = list()
+        path = fr"C:\Users\Home\Documents\Python\prog\resumo_valorizacao - Copia\.tmp\base.xlsx"
 
-            try:
-                excel = client.Dispatch("Excel.Application")
+        for workbook in self.workbooks:
+            workbook.save(path)
+            with open(self.template_workbook):
+                try:
+                    excel = client.Dispatch("Excel.Application")
+                    excel.Application.DisplayAlerts = False
 
-                wb = excel.Workbooks.OpenXML(r"C:\Users\Home\Desktop\resumo_valorizacao\.tmp\tmpfile.xlsx")
-                ws = wb.Worksheets[1]
+                    wb = excel.Workbooks.OpenXML(path)
+                    ws = wb.Worksheets[1]
 
-                ws.PageSetup.PrintArea = "B1:CB53"
-                ws.ExportAsFixedFormat(0, fr"C:\Users\Home\Desktop\resumo_valorizacao\.tmp\{i}.pdf")
-                wb.Close(True)
-            finally:
-                ws = None
-                wb = None
-                excel.Application.Quit()
-                excel = None
-                inp.close()
+                    ws.PageSetup.PrintArea = "B1:CB53"
+                    uid_str = str(uid()).replace("-", "")
+                    ws.ExportAsFixedFormat(0, fr"C:\Users\Home\Documents\Python\prog\resumo_valorizacao - Copia\.tmp\{uid_str}.pdf")
+                    pdfs.append(fr"C:\Users\Home\Documents\Python\prog\resumo_valorizacao - Copia\.tmp\{uid_str}.pdf")
+
+                finally:
+                    wb.Close(False)
+                    excel.Application.Quit()
+                    excel = None
+                    wb = None
+                    ws = None
+
+        pythoncom.CoUninitialize()
+        return pdfs
+
+    def merge_pdfs(self, pdfs):
+        import fitz
+
+        file = BytesIO()
+        result = fitz.open()
+
+        for pdf in pdfs:
+            with fitz.open(pdf) as mfile:
+                result.insert_pdf(mfile)
+
+        result.save(file)
+
+        self.merged_pdf = file
+
+
+def load_config(filename):
+    with open(f"modules/{filename}.json") as cfg_file:
+        cfg = cfg_file.read()
+    from json import loads
+    return loads(cfg)

@@ -1,28 +1,27 @@
 <!DOCTYPE html>
-<html lang="pt-br">
+<html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Traduzir valorização</title>
-    <script src="/static/upload.js"></script>
+    <script src="/static/upload_traducao.js"></script>
     <link rel="stylesheet" href="/static/css.css">
 </head>
 <body>
-    <a class="back_button" href="javascript:history.go(-1)">&#9664; Voltar</a>
+    <a class="back_button">&#9664; Voltar</a>
     <div class="description">
         <h1>Traduz&nbsp;valorização</h1>
-        <p>&emsp;Para utilizar o software, envie o excel do resumo dos pdfs no primeiro
-            campo e envie a planilha de valorização que será usada para traduzir os pdfs
-            no segundo campo.</p>
+        <p>&emsp;Para utilizar o software, envie o excel do resumo dos pdfs no primeiro campo</p>
     </div>
-    <form class="form" method="POST" enctype="multipart/form-data">
-        <label class="file_label" for="pdf_0">Resumo: </label>
-        <input class="file_input" id="pdf_0" type="file" accept="xlsx">
-        <label class="file_label" for="pdf_1">Planilha base: </label>
-        <input class="file_input" id="pdf_1" type="file" accept="xlsx">
-        <button class="submit_button" id="submit" type="submit" onclick="(event) => event.preventDefault()">Enviar</button>
+    <form>
+        <label class="file_label" for="resumo">Resumo linha por linha: </label>
+        <input class="file_input" id="resumo" type="file" accept="xlsx" autocomplete="off">
+        <button class="submit_button" id="submit">Enviar</button>
         <p id="loading" hidden>carregando...</p>
-        <button class="download_button" id="download" hidden>Baixar pdfs traduzidos</button>
+        <a class="download_button" id="download" hidden>Baixar pdfs traduzidos</a>
     </form>
 </body>
+<script defer>
+    document.querySelector(".back_button").addEventListener("click", () => {history.go(-1);});
+    document.querySelector(".submit_button").addEventListener("click", (event) => event.preventDefault());
+</script>
 </html>

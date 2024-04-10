@@ -1,68 +1,89 @@
 * {
-    color: azure;
+    color: darkslategray;
     font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
-    padding: 10px;
+    padding: 0;
+    margin: 0;
 }
 
 body {
     display: flex;
-    margin: 10%;
+    height: 100vh;
+    padding: 10%;
+    box-sizing: border-box;
     align-items: center;
     justify-content: space-around;
-    column-count: 2;
     background-color: floralwhite;
 }
 
-a {
-    color: inherit;
-    text-decoration: inherit;
-    font: inherit;
+.back_button {
+    font-family: inherit;
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    color: darkslategray;
 }
 
-h1 {
-    color: inherit;
+.description {
+    border: 1px solid gainsboro;
+    border-radius: 10px;
+    padding: 10px;
+    max-width: 40%;
+}
+
+.description h1 {
     overflow: hidden;
+    white-space: nowrap;
 }
 
-p {
-    color: inherit;
+.description p {
     text-align: justify;
     overflow: hidden;
     text-overflow: ellipsis;
 }
 
-.description {
-    color: darkslategray;
-    border: 1px solid gainsboro;
-    border-radius: 10px;
-    max-width: 40%;
-}
-
-.form {
+form {
     display: flex;
     flex-direction: column;
     text-align: left;
     align-items: center;
     border: 1px solid gainsboro;
     border-radius: 10px;
+    padding: 10px;
     color: darkslategray;
 }
 
-.file_label {
+form .file_label {
     align-self: flex-start;
     color: darkslategray;
     padding-bottom: 0;
     padding-left: 30px;
 }
 
-.file_input {
+form .file_input {
     width: fit-content;
     margin: 1rem;
     margin-top: .3rem;
     padding: 6px 12px;
     background-color: black;
+    color: white;
     border: 1px solid gainsboro;   
     cursor: pointer;
+}
+
+fieldset {
+    display: flex;
+    flex-direction: column;
+}
+
+fieldset span {
+    display: flex;
+    gap: 10px;
+    padding: 5px;
+    justify-content: space-between;
+}
+
+.options {
+    display: flex;
 }
 
 .submit_button {
@@ -73,6 +94,7 @@ p {
     border: 1px solid #ccc;
     border-radius: 50px;
     background-color: black;
+    color: white;
     cursor: pointer;
     transition: 0.2s;
 }
@@ -85,10 +107,12 @@ p {
 .download_button {
     justify-content: center;
     padding: 5px 15px 5px 15px;
-    margin: 1rem;
+    margin: .5rem;
     border: 1px solid #ccc;
     border-radius: 50px;
     background-color: black;
+    color: white;
+    font-size: 14px;
     cursor: pointer;
     transition: 0.2s;
 }
@@ -98,16 +122,16 @@ p {
     transition: 0.2s;
 }
 
-.back_button {
-    font-family: inherit;
-    position: absolute;
-    top: 10px;
-    left: 10px;
-    color: darkslategray;
+.hidden {
+    display: none;
 }
 
-@media all and (max-width: 780px) {
+@media screen and (max-width: 870px) {
     body {
-        column-count: 1;
+        flex-direction: column;
+    }
+
+    .description {
+        max-width: 80%;
     }
 }

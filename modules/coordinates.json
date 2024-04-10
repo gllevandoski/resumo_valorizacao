@@ -1,0 +1,60 @@
+{
+    "coordinates": {
+        "general_coordinates": {
+            "representative": [50, 78, 168, 90],
+            "buyer": [170, 78, 336, 90],
+            "date": [350, 78, 480, 90],
+            "buyer_cpf": [168, 104, 250, 120],
+            "buyer_rg": [270, 105, 400, 118],
+            "analysis_average": [100, 140, 164, 198],
+            "analysis": [50, 240, 440, 488],
+            "serial_number": [288, 204, 470, 230],
+            "analysis_type": [30, 225, 50, 248],
+            "quotations": [380, 142, 450, 196],
+            "total_value": [370, 480, 450, 528],
+            "avg_kg_price": [110, 480, 170, 528]
+        },
+        "py_coordinates": {
+            "representative": [50, 73, 172, 86],
+            "buyer": [174, 73, 336, 86],
+            "date": [350, 73, 440, 86],
+            "buyer_cpf": [168, 102, 250, 114],
+            "buyer_rg": [270, 105, 400, 118],
+            "analysis_average": [110, 132, 164, 188],
+            "analysis": [50, 240, 440, 468],
+            "serial_number": [300, 192, 500, 225],
+            "analysis_type": [30, 225, 55, 238],
+            "quotations": [380, 135, 450, 190],
+            "total_value": [370, 486, 460, 498],
+            "avg_kg_price": [110, 512, 170, 526]
+        },
+        "br_coordinates": {
+            "representative": [50, 78, 168, 90],
+            "buyer": [170, 78, 336, 90],
+            "date": [350, 78, 450, 90],
+            "buyer_cpf": [168, 104, 250, 120],
+            "buyer_rg": [270, 105, 400, 118],
+            "analysis_average": [100, 140, 168, 198],
+            "analysis": [50, 240, 450, 488],
+            "serial_number": [288, 204, 470, 230],
+            "analysis_type": [30, 225, 50, 248],
+            "quotations": [380, 142, 450, 196],
+            "total_value": [370, 498, 450, 528],
+            "avg_kg_price": [110, 498, 170, 510]
+        }
+    },
+    "types": {
+        "0": {
+            "fun": "self.write_line_by_line",
+            "wb_path": "modules/resumo/static/general.xlsx"
+        },
+        "1": {
+            "fun": "self.write_brief",
+            "wb_path": "modules/resumo/static/general.xlsx"
+        },
+        "2": {
+            "fun": "self.write_general_brief",
+            "wb_path": "modules/resumo/static/brief.xlsx"
+        }
+    }
+}
