@@ -5,6 +5,7 @@ function upload(formData) {
     let fieldsets = document.querySelectorAll("fieldset");
     let submit_button = document.querySelector(".submit_button");
 
+
     download_button.hidden = true;
     loading.hidden = false;
     file_input.disabled = true;
@@ -15,12 +16,22 @@ function upload(formData) {
     let request = new Request(window.location.href, {method: "POST", body: formData});
     fetch(request)
     .then(response => {
+        console.log("one response");
         let raw_filename = response.headers.get("Content-Disposition");
         let filename = raw_filename.slice(22, raw_filename.lastIndexOf("."));
 
         response.blob().then((blob) => {
-            download_button.href = window.URL.createObjectURL(blob);
+            if (this.downloadURL) {
+                URL.revokeObjectURL(this.downloadURL);
+            }
+
+            this.blob = blob;
+            this.downloadURL = URL.createObjectURL(this.blob);
+            download_button.href = this.downloadURL;
             download_button.download = filename;
+
+            console.log("clicking");
+            console.log(download_button);
             download_button.click();
         });
 
@@ -29,13 +40,35 @@ function upload(formData) {
         loading.hidden = true;
         file_input.disabled = false;
         for(fs of fieldsets) {fs.disabled = false}
+
         submit_button.disabled = false;
 
-        addListeners();
+        for(fs of fieldsets) {
+            fs.addEventListener("change", () => {
+                download_button.hidden = true;
+                download_button.download = null;
+                download_button.href = null;
+
+                if (this.downloadURL) {
+                    URL.revokeObjectURL(this.downloadURL);
+                    this.downloadURL = null;
+                }
+
+                this.blob = null;
+            });
+        }
     });
 }
 
-function handle_upload(file_input, selected_write_type, selected_alignment_type) {
+function handle_upload() {
+    let file_input = document.querySelector(".file_input");
+    let selected_write_type = document.querySelector(".write_types input:checked");
+    let selected_alignment_type = document.querySelector(".alignment_type input:checked");
+
+    if (file_input.files.length != 1 || !selected_write_type || !selected_alignment_type) {
+        return
+    }
+
     let formData = new FormData();
 
     formData.append(String(file_input.id), file_input.files[0]);
@@ -46,20 +79,10 @@ function handle_upload(file_input, selected_write_type, selected_alignment_type)
 }
 
 function addListeners() {
-    document.querySelector(".submit_button").addEventListener("click", () => {
-        let file_input = document.querySelector(".file_input");
-        let selected_write_type = document.querySelector(".write_types input:checked");
-        let selected_alignment_type = document.querySelector(".alignment_type input:checked");
-
-        if (file_input.files.length != 1 || !selected_write_type || !selected_alignment_type) {
-            return
-        }
-
-        handle_upload(file_input, selected_write_type, selected_alignment_type);
-    });
+    document.querySelector(".submit_button").addEventListener("click", handle_upload);
     document.querySelector(".file_input").addEventListener("change", () => {
         document.querySelector(".download_button").hidden = true;
-    })
+    });
 }
 
 window.addEventListener("DOMContentLoaded", addListeners);
