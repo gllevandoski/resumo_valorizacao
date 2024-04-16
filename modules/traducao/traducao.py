@@ -105,7 +105,7 @@ class Translate:
         pythoncom.CoInitialize()
 
         pdfs = list()
-        path = fr"C:\Users\Home\Documents\Python\prog\resumo_valorizacao - Copia\.tmp\base.xlsx"
+        path = fr"C:\Users\Home\Documents\Python\prog\resumo_valorizacao\.tmp\base.xlsx"
 
         for workbook in self.workbooks:
             workbook.save(path)
@@ -119,8 +119,8 @@ class Translate:
 
                     ws.PageSetup.PrintArea = "B1:CB53"
                     uid_str = str(uid()).replace("-", "")
-                    ws.ExportAsFixedFormat(0, fr"C:\Users\Home\Documents\Python\prog\resumo_valorizacao - Copia\.tmp\{uid_str}.pdf")
-                    pdfs.append(fr"C:\Users\Home\Documents\Python\prog\resumo_valorizacao - Copia\.tmp\{uid_str}.pdf")
+                    ws.ExportAsFixedFormat(0, fr"C:\Users\Home\Documents\Python\prog\resumo_valorizacao\.tmp\{uid_str}.pdf")
+                    pdfs.append(fr"C:\Users\Home\Documents\Python\prog\resumo_valorizacao\.tmp\{uid_str}.pdf")
 
                 finally:
                     wb.Close(False)

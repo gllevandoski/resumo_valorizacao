@@ -16,7 +16,6 @@ function upload(formData) {
     let request = new Request(window.location.href, {method: "POST", body: formData});
     fetch(request)
     .then(response => {
-        console.log("one response");
         let raw_filename = response.headers.get("Content-Disposition");
         let filename = raw_filename.slice(22, raw_filename.lastIndexOf("."));
 
@@ -30,8 +29,6 @@ function upload(formData) {
             download_button.href = this.downloadURL;
             download_button.download = filename;
 
-            console.log("clicking");
-            console.log(download_button);
             download_button.click();
         });
 

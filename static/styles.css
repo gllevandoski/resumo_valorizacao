@@ -21,12 +21,13 @@ body {
     top: 10px;
     left: 10px;
     color: darkslategray;
+    cursor: pointer;
 }
 
 .description {
     border: 1px solid gainsboro;
     border-radius: 10px;
-    padding: 10px;
+    padding: 20px;
     max-width: 40%;
 }
 
@@ -66,13 +67,15 @@ form .file_input {
     padding: 6px 12px;
     background-color: black;
     color: white;
-    border: 1px solid gainsboro;   
+    border: 1px solid gainsboro;
+    border-radius: 5px;
     cursor: pointer;
 }
 
 fieldset {
     display: flex;
     flex-direction: column;
+    border-radius: 3px;
 }
 
 fieldset span {
@@ -82,8 +85,13 @@ fieldset span {
     justify-content: space-between;
 }
 
+fieldset span label {
+    flex-grow: 1;
+}
+
 .options {
     display: flex;
+    gap: 10px;
 }
 
 .submit_button {
